@@ -22,6 +22,34 @@ export class MySQLCreditoRepository implements ICreditoRepository {
     return credito[0]
   }
 
+  async getSaldo(cliente: string): Promise<string> {
+    const [saldo] = await this.databaseProvider.getConnection().query(
+      `
+      SELECT
+        credito.saldo
+      FROM credito
+      INNER JOIN cliente ON credito.cliente = cliente.id
+      WHERE cliente.id = ?`,
+      [cliente]
+    )
+
+    if (saldo.length === 0) {
+      throw new Error('Cliente não encontrado ou saldo não disponível.');
+    }
+
+    return saldo[0].saldo
+  }
+
+  async discontSaldo(cliente: string, valor: number): Promise<void> {
+    const [saldo] = await this.databaseProvider.getConnection().query(
+      `
+      UPDATE credito
+      SET saldo = saldo - ?
+      WHERE cliente = ?`,
+      [valor, cliente]
+    )
+  }
+
   async save(credito: Credito): Promise<void> {
     const [result] = await this.databaseProvider.getConnection().query(
       `
