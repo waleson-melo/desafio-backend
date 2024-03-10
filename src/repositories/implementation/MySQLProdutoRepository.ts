@@ -11,7 +11,20 @@ export class MySQLProdutoRepository implements IProdutoRepository {
   }
 
   async findById(id: string): Promise<Produto> {
-    throw new Error("Method not implemented.")
+    const [produto] = await this.databaseProvider.getConnection().query(
+      `
+      SELECT
+        id,
+        nome,
+        descricao,
+        preco,
+        imagem
+      FROM produto
+      WHERE id = ?
+      `,
+      [id]
+    )
+    return produto[0]
   }
 
   async list(): Promise<Produto[]> {

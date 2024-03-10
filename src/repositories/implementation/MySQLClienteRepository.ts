@@ -22,6 +22,21 @@ export class MySQLClienteRepository implements IClienteRepository {
     return cliente[0]
   }
 
+  async findByCPF(cpf: string): Promise<Cliente> {
+    const [cliente] = await this.databaseProvider.getConnection().query(
+      `
+      SELECT
+        id,
+        nome,
+        email,
+        cpf
+      FROM cliente
+      WHERE cpf = ?`,
+      [cpf]
+    )
+    return cliente[0]
+  }
+
   async save(cliente: Cliente): Promise<void> {
     const [result] = await this.databaseProvider.getConnection().query(
       `

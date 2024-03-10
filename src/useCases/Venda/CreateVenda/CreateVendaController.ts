@@ -18,7 +18,7 @@ export class CreateVendaController {
 
       return response.status(201).send()
     } catch (error) {
-      return response.status(400).json({
+      return response.status(402).json({
         message: error.message || "Unexpected error.",
       })
     }
