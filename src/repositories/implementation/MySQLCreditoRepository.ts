@@ -34,8 +34,22 @@ export class MySQLCreditoRepository implements ICreditoRepository {
     )
 
     if (saldo.length === 0) {
-      throw new Error('Cliente não encontrado ou saldo não disponível.');
+      throw new Error("Cliente não encontrado ou saldo não disponível.")
     }
+
+    return saldo[0].saldo
+  }
+
+  async getSaldoByCPF(cpf: string): Promise<string> {
+    const [saldo] = await this.databaseProvider.getConnection().query(
+      `
+      SELECT
+        credito.saldo
+      FROM credito
+      INNER JOIN cliente ON credito.cliente = cliente.id
+      WHERE cliente.cpf = ?`,
+      [cpf]
+    )
 
     return saldo[0].saldo
   }
